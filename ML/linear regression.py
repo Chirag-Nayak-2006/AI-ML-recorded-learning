@@ -1,20 +1,24 @@
 import numpy as np
     
-class LinearRegressionSV():
+class LinearRegressionMV():
     def __init__(self): #weights
-        self.w = 0
+        self.w = None
         self.b = 0
         
     def f(self, X): #model
-        return self.w*X + self.b
+        return np.dot(self.w,X) + self.b
     
-    def cost_fuction(self, X, Y): #cost 
-        return np.mean((self.f(X) - Y)**2) / 2
+    def cost_fuction(self, x, Y): #cost 
+        return np.mean((self.f(x) - Y)**2) / 2
     
     def gradient_descent(self, X, Y, it, alpha): #fitting the model to the data
-        m = len(X)
+        m,n = X.shape
+        if self.w is None:
+            self.w = np.zeros(n)
+            
         for _ in range(it):
-            error = np.mean(self.f(X) - Y)
-            djdw = np.dot(error, X) / m
+            error = self.f(X) - Y
+            djdw = np.dot(X.T, error) / m
             djdb = np.mean(error)
-            self.w, self.b  = self.w - alpha*djdw, self.b - alpha*djdb
+            self.w -= alpha*djdw
+            self.b -= alpha*djdb
