@@ -1,22 +1,20 @@
 import numpy as np
-
-x = np.array([]) #input features
-y = np.array([]) #corresponding output
-
-#weights
-w,b = 0,0
-def f(num): #model
-    global w,b
-    return w*num + b
-
-def j(inArr,outArr): #cost function
-    return 1/(2*len(inArr)) * sum((f(inArr[i])-outArr[i])**2 for i in range(len(inArr)))
-
-def gradient_descent(inArr, outArr, it, alpha):
-    global w,b
-    for j in range(it):
-        djdw = 1/(len(inArr)) * sum((f(inArr[i])-outArr[i])*inArr[i] for i in range(len(inArr)))
-        djdb = 1/(len(inArr)) * sum((f(inArr[i])-outArr[i]) for i in range(len(inArr)))
-        w,b = w - alpha*djdw, b - alpha*djdb
     
+class LinearRegressionSV():
+    def __init__(self): #weights
+        self.w = 0
+        self.b = 0
+        
+    def f(self, X): #model
+        return self.w*X + self.b
     
+    def cost_fuction(self, X, Y): #cost 
+        return np.mean((self.f(X) - Y)**2) / 2
+    
+    def gradient_descent(self, X, Y, it, alpha): #fitting the model to the data
+        m = len(X)
+        for _ in range(it):
+            error = np.mean(self.f(X) - Y)
+            djdw = np.dot(error, X) / m
+            djdb = np.mean(error)
+            self.w, self.b  = self.w - alpha*djdw, self.b - alpha*djdb
